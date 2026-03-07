@@ -1,0 +1,4040 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EvilHunterTycoon Server",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "description": "서비스 상태 및 버전. 배포/로드밸런서 헬스체크용.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monsters": {
+      "get": {
+        "tags": [
+          "Monster"
+        ],
+        "summary": "List Monsters",
+        "operationId": "list_monsters_monsters_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Monster"
+        ],
+        "summary": "Upsert Monster",
+        "operationId": "upsert_monster_monsters_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Monster"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monsters/{monster_id}": {
+      "get": {
+        "tags": [
+          "Monster"
+        ],
+        "summary": "Get Monster",
+        "operationId": "get_monster_monsters__monster_id__get",
+        "parameters": [
+          {
+            "name": "monster_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Monster Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Monster"
+        ],
+        "summary": "Delete Monster",
+        "operationId": "delete_monster_monsters__monster_id__delete",
+        "parameters": [
+          {
+            "name": "monster_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Monster Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/maps": {
+      "get": {
+        "tags": [
+          "Map"
+        ],
+        "summary": "List Maps",
+        "operationId": "list_maps_maps_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Map"
+        ],
+        "summary": "Upsert Map",
+        "operationId": "upsert_map_maps_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Map"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/maps/{map_id}": {
+      "get": {
+        "tags": [
+          "Map"
+        ],
+        "summary": "Get Map",
+        "operationId": "get_map_maps__map_id__get",
+        "parameters": [
+          {
+            "name": "map_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Map Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Map"
+        ],
+        "summary": "Delete Map",
+        "operationId": "delete_map_maps__map_id__delete",
+        "parameters": [
+          {
+            "name": "map_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Map Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/villages": {
+      "get": {
+        "tags": [
+          "Village"
+        ],
+        "summary": "List Villages",
+        "operationId": "list_villages_villages_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Village"
+        ],
+        "summary": "Upsert Village",
+        "operationId": "upsert_village_villages_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Village"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/villages/{village_id}": {
+      "get": {
+        "tags": [
+          "Village"
+        ],
+        "summary": "Get Village",
+        "operationId": "get_village_villages__village_id__get",
+        "parameters": [
+          {
+            "name": "village_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Village Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Village"
+        ],
+        "summary": "Delete Village",
+        "operationId": "delete_village_villages__village_id__delete",
+        "parameters": [
+          {
+            "name": "village_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Village Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hunters": {
+      "get": {
+        "tags": [
+          "Hunter"
+        ],
+        "summary": "List Hunters",
+        "operationId": "list_hunters_hunters_get",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Accountid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Hunter"
+        ],
+        "summary": "Upsert Hunter",
+        "operationId": "upsert_hunter_hunters_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Hunter"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hunters/{hunter_id}": {
+      "get": {
+        "tags": [
+          "Hunter"
+        ],
+        "summary": "Get Hunter",
+        "operationId": "get_hunter_hunters__hunter_id__get",
+        "parameters": [
+          {
+            "name": "hunter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Hunter Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Hunter"
+        ],
+        "summary": "Delete Hunter",
+        "operationId": "delete_hunter_hunters__hunter_id__delete",
+        "parameters": [
+          {
+            "name": "hunter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Hunter Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hunters/{hunter_id}/recruit": {
+      "post": {
+        "tags": [
+          "Hunter"
+        ],
+        "summary": "Recruit Hunter",
+        "description": "Assign random MBTI on recruit (server-side) if hunter exists and MBTI is NONE/empty.",
+        "operationId": "recruit_hunter_hunters__hunter_id__recruit_post",
+        "parameters": [
+          {
+            "name": "hunter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Hunter Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hunters/{hunter_id}/promote": {
+      "post": {
+        "tags": [
+          "Hunter"
+        ],
+        "summary": "Promote Hunter",
+        "description": "Apply a promotion node to a hunter.\n\nRules:\n- Node must exist.\n- Node parent must match the last node in hunter.promotionPath (or be None for root).\n- choiceGroup can only be taken once.\n- statBonus is applied cumulatively to hunter base stats (hp/atk/defense).\n- jobId is updated to node.jobId.",
+        "operationId": "promote_hunter_hunters__hunter_id__promote_post",
+        "parameters": [
+          {
+            "name": "hunter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Hunter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HunterPromoteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HunterPromoteResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hunters/{hunter_id}/equip": {
+      "post": {
+        "tags": [
+          "Hunter"
+        ],
+        "summary": "Equip Items",
+        "description": "Equip item ids for a hunter with validation.\n\nValidation:\n- All itemIds must exist.\n- Only one item per slot.\n- Item seasonId must match hunter.seasonId.\n- Item tierId must be <= hunter.tierId (T1 <= T2 ...).",
+        "operationId": "equip_items_hunters__hunter_id__equip_post",
+        "parameters": [
+          {
+            "name": "hunter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Hunter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HunterEquipRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HunterEquipResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hunters/{hunter_id}/tier-up": {
+      "post": {
+        "tags": [
+          "Hunter"
+        ],
+        "summary": "Tier Up Hunter",
+        "description": "영웅 티어 상승 (T1 -> T2 -> ...). tier_defs에 정의된 티어만 허용.",
+        "operationId": "tier_up_hunter_hunters__hunter_id__tier_up_post",
+        "parameters": [
+          {
+            "name": "hunter_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Hunter Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HunterTierUpRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HunterTierUpResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offline/preview": {
+      "post": {
+        "tags": [
+          "Offline"
+        ],
+        "summary": "Preview",
+        "operationId": "preview_offline_preview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfflinePreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflinePreviewResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/offline/collect": {
+      "post": {
+        "tags": [
+          "Offline"
+        ],
+        "summary": "Collect",
+        "operationId": "collect_offline_collect_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfflinePreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflineCollectResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/combat/fight": {
+      "post": {
+        "tags": [
+          "Combat"
+        ],
+        "summary": "Fight",
+        "operationId": "fight_combat_fight_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CombatFightRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CombatFightResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rewards/tiers/{kind}": {
+      "get": {
+        "tags": [
+          "WorldBoss",
+          "PvP"
+        ],
+        "summary": "Get Reward Tiers",
+        "operationId": "get_reward_tiers_rewards_tiers__kind__get",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Kind"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rewards/tiers": {
+      "post": {
+        "tags": [
+          "WorldBoss",
+          "PvP"
+        ],
+        "summary": "Post Reward Tier",
+        "operationId": "post_reward_tier_rewards_tiers_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RewardTierUpsertRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardTier"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worldbosses": {
+      "get": {
+        "tags": [
+          "WorldBoss",
+          "PvP"
+        ],
+        "summary": "List Worldbosses",
+        "operationId": "list_worldbosses_worldbosses_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "WorldBoss",
+          "PvP"
+        ],
+        "summary": "Upsert Worldboss",
+        "operationId": "upsert_worldboss_worldbosses_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorldBoss"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pvp/seasons": {
+      "get": {
+        "tags": [
+          "WorldBoss",
+          "PvP"
+        ],
+        "summary": "List Pvp Seasons",
+        "operationId": "list_pvp_seasons_pvp_seasons_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "WorldBoss",
+          "PvP"
+        ],
+        "summary": "Upsert Pvp Season",
+        "operationId": "upsert_pvp_season_pvp_seasons_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PvPSeason"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/worldboss/claim": {
+      "post": {
+        "tags": [
+          "WorldBoss",
+          "PvP"
+        ],
+        "summary": "Claim Worldboss",
+        "operationId": "claim_worldboss_worldboss_claim_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorldBossClaimRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardClaimResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pvp/claim": {
+      "post": {
+        "tags": [
+          "WorldBoss",
+          "PvP"
+        ],
+        "summary": "Claim Pvp",
+        "operationId": "claim_pvp_pvp_claim_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PvPClaimRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardClaimResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/modes": {
+      "get": {
+        "tags": [
+          "AdminMode"
+        ],
+        "summary": "List Modes",
+        "operationId": "list_modes_admin_modes_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AdminMode"
+        ],
+        "summary": "Upsert Mode",
+        "operationId": "upsert_mode_admin_modes_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminModeUpsertRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/modes/{key}": {
+      "get": {
+        "tags": [
+          "AdminMode"
+        ],
+        "summary": "Get Mode",
+        "operationId": "get_mode_admin_modes__key__get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/guest": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Guest Login",
+        "operationId": "guest_login_auth_guest_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuestLoginReq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh",
+        "operationId": "refresh_auth_refresh_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshReq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Logout",
+        "operationId": "logout_auth_logout_post",
+        "parameters": [
+          {
+            "name": "deviceId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Deviceid"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/oauth/google": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Oauth Google",
+        "operationId": "oauth_google_auth_oauth_google_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OAuthLoginReq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/oauth/apple": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Oauth Apple",
+        "operationId": "oauth_apple_auth_oauth_apple_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppleOAuthReq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/link/google": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Link Google",
+        "operationId": "link_google_auth_link_google_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkGoogleReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/link/apple": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Link Apple",
+        "operationId": "link_apple_auth_link_apple_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkAppleReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/iap/google/verify": {
+      "post": {
+        "tags": [
+          "IAP"
+        ],
+        "summary": "Verify Google",
+        "operationId": "verify_google_iap_google_verify_post",
+        "parameters": [
+          {
+            "name": "X-Req-TS",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Req-Ts"
+            }
+          },
+          {
+            "name": "X-Req-Nonce",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Req-Nonce"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleVerifyReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/iap/apple/verify": {
+      "post": {
+        "tags": [
+          "IAP"
+        ],
+        "summary": "Verify Apple",
+        "operationId": "verify_apple_iap_apple_verify_post",
+        "parameters": [
+          {
+            "name": "X-Req-TS",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Req-Ts"
+            }
+          },
+          {
+            "name": "X-Req-Nonce",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Req-Nonce"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppleVerifyReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/auth/login": {
+      "post": {
+        "tags": [
+          "AdminAuth"
+        ],
+        "summary": "Admin Login",
+        "operationId": "admin_login_admin_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminLoginReq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/tools/grant": {
+      "post": {
+        "tags": [
+          "AdminTools"
+        ],
+        "summary": "Grant Currency",
+        "operationId": "grant_currency_admin_tools_grant_post",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrantCurrencyReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/tools/ban": {
+      "post": {
+        "tags": [
+          "AdminTools"
+        ],
+        "summary": "Ban Account",
+        "operationId": "ban_account_admin_tools_ban_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BanReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/tools/unban": {
+      "post": {
+        "tags": [
+          "AdminTools"
+        ],
+        "summary": "Unban Account",
+        "operationId": "unban_account_admin_tools_unban_post",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Accountid"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/tools/ban/{account_id}": {
+      "get": {
+        "tags": [
+          "AdminTools"
+        ],
+        "summary": "Get Ban Status",
+        "operationId": "get_ban_status_admin_tools_ban__account_id__get",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Account Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/audit/logs": {
+      "get": {
+        "tags": [
+          "AdminAudit"
+        ],
+        "summary": "Get Logs",
+        "operationId": "get_logs_admin_audit_logs_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 200,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/catalog/iap-products": {
+      "get": {
+        "tags": [
+          "AdminCatalog"
+        ],
+        "summary": "Get Iap Products",
+        "operationId": "get_iap_products_admin_catalog_iap_products_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AdminCatalog"
+        ],
+        "summary": "Upsert Iap Product",
+        "operationId": "upsert_iap_product_admin_catalog_iap_products_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IapProductUpsertReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/catalog/tiers": {
+      "get": {
+        "tags": [
+          "AdminCatalog"
+        ],
+        "summary": "Get Tiers",
+        "operationId": "get_tiers_admin_catalog_tiers_get",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Seasonid"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AdminCatalog"
+        ],
+        "summary": "Post Tier",
+        "operationId": "post_tier_admin_catalog_tiers_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TierUpsertReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/catalog/mbti": {
+      "get": {
+        "tags": [
+          "AdminCatalog"
+        ],
+        "summary": "Get Mbti",
+        "operationId": "get_mbti_admin_catalog_mbti_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AdminCatalog"
+        ],
+        "summary": "Post Mbti",
+        "operationId": "post_mbti_admin_catalog_mbti_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MbtiUpsertReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/catalog/items": {
+      "get": {
+        "tags": [
+          "AdminCatalog"
+        ],
+        "summary": "Get Items",
+        "operationId": "get_items_admin_catalog_items_get",
+        "parameters": [
+          {
+            "name": "seasonId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Seasonid"
+            }
+          },
+          {
+            "name": "tierId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tierid"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AdminCatalog"
+        ],
+        "summary": "Post Item",
+        "operationId": "post_item_admin_catalog_items_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemUpsertReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/catalog/promotions": {
+      "get": {
+        "tags": [
+          "AdminCatalog"
+        ],
+        "summary": "Get Promotions",
+        "operationId": "get_promotions_admin_catalog_promotions_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AdminCatalog"
+        ],
+        "summary": "Post Promotions",
+        "operationId": "post_promotions_admin_catalog_promotions_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromotionNodeUpsertReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdminLoginReq": {
+        "properties": {
+          "adminKey": {
+            "type": "string",
+            "title": "Adminkey"
+          }
+        },
+        "type": "object",
+        "required": [
+          "adminKey"
+        ],
+        "title": "AdminLoginReq"
+      },
+      "AdminModeUpsertRequest": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": true
+          },
+          "multiplier": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Multiplier",
+            "default": 1.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "title": "AdminModeUpsertRequest"
+      },
+      "AppleOAuthReq": {
+        "properties": {
+          "identityToken": {
+            "type": "string",
+            "title": "Identitytoken"
+          },
+          "deviceId": {
+            "type": "string",
+            "title": "Deviceid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "identityToken",
+          "deviceId"
+        ],
+        "title": "AppleOAuthReq"
+      },
+      "AppleVerifyReq": {
+        "properties": {
+          "productId": {
+            "type": "string",
+            "title": "Productid"
+          },
+          "txId": {
+            "type": "string",
+            "title": "Txid"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Raw"
+          }
+        },
+        "type": "object",
+        "required": [
+          "productId",
+          "txId"
+        ],
+        "title": "AppleVerifyReq"
+      },
+      "BanReq": {
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "title": "Accountid"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "default": ""
+          },
+          "durationSec": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Durationsec",
+            "description": "If omitted -> permanent. If provided -> seconds from now."
+          }
+        },
+        "type": "object",
+        "required": [
+          "accountId"
+        ],
+        "title": "BanReq"
+      },
+      "CombatFightRequest": {
+        "properties": {
+          "hunterId": {
+            "type": "string",
+            "title": "Hunterid"
+          },
+          "monsterId": {
+            "type": "string",
+            "title": "Monsterid"
+          },
+          "seed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seed"
+          },
+          "buffs": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Buffs"
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunterId",
+          "monsterId"
+        ],
+        "title": "CombatFightRequest"
+      },
+      "CombatFightResponse": {
+        "properties": {
+          "hunterId": {
+            "type": "string",
+            "title": "Hunterid"
+          },
+          "monsterId": {
+            "type": "string",
+            "title": "Monsterid"
+          },
+          "damagePerHit": {
+            "type": "number",
+            "title": "Damageperhit"
+          },
+          "hitsToKill": {
+            "type": "integer",
+            "title": "Hitstokill"
+          },
+          "totalSec": {
+            "type": "number",
+            "title": "Totalsec"
+          },
+          "fightSucceed": {
+            "type": "boolean",
+            "title": "Fightsucceed"
+          },
+          "breakdown": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Breakdown"
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunterId",
+          "monsterId",
+          "damagePerHit",
+          "hitsToKill",
+          "totalSec",
+          "fightSucceed"
+        ],
+        "title": "CombatFightResponse"
+      },
+      "GoogleVerifyReq": {
+        "properties": {
+          "productId": {
+            "type": "string",
+            "title": "Productid"
+          },
+          "purchaseToken": {
+            "type": "string",
+            "title": "Purchasetoken"
+          },
+          "txId": {
+            "type": "string",
+            "title": "Txid"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Raw"
+          }
+        },
+        "type": "object",
+        "required": [
+          "productId",
+          "purchaseToken",
+          "txId"
+        ],
+        "title": "GoogleVerifyReq"
+      },
+      "GrantCurrencyReq": {
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "title": "Accountid"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "gold",
+              "gems",
+              "exp"
+            ],
+            "title": "Currency"
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount",
+            "description": "can be negative for rollback; must be non-zero"
+          },
+          "hunterId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hunterid",
+            "description": "Optional. If provided, directly mutates the hunter snapshot for convenience."
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "default": ""
+          },
+          "idempotencyKey": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Idempotencykey",
+            "description": "Optional. If omitted, uses Idempotency-Key header or auto-generates (not idempotent)."
+          }
+        },
+        "type": "object",
+        "required": [
+          "accountId",
+          "currency",
+          "amount"
+        ],
+        "title": "GrantCurrencyReq"
+      },
+      "GuestLoginReq": {
+        "properties": {
+          "deviceId": {
+            "type": "string",
+            "title": "Deviceid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "deviceId"
+        ],
+        "title": "GuestLoginReq"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "title": "Ok",
+            "default": true
+          },
+          "service": {
+            "type": "string",
+            "title": "Service",
+            "default": "evil-hunter-server"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "default": "0.1.0"
+          }
+        },
+        "type": "object",
+        "title": "HealthResponse"
+      },
+      "Hunter": {
+        "properties": {
+          "hunterId": {
+            "type": "string",
+            "title": "Hunterid"
+          },
+          "accountId": {
+            "type": "string",
+            "title": "Accountid"
+          },
+          "slotIndex": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Slotindex",
+            "default": 0
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          },
+          "jobId": {
+            "type": "string",
+            "title": "Jobid",
+            "default": "novice"
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Level",
+            "default": 1
+          },
+          "exp": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Exp",
+            "default": 0
+          },
+          "powerScore": {
+            "type": "number",
+            "title": "Powerscore",
+            "default": 0.0
+          },
+          "hp": {
+            "type": "number",
+            "title": "Hp",
+            "default": 0.0
+          },
+          "atk": {
+            "type": "number",
+            "title": "Atk",
+            "default": 0.0
+          },
+          "defense": {
+            "type": "number",
+            "title": "Defense",
+            "default": 0.0
+          },
+          "gold": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Gold",
+            "default": 0
+          },
+          "gems": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Gems",
+            "default": 0
+          },
+          "mbti": {
+            "type": "string",
+            "title": "Mbti",
+            "default": "NONE"
+          },
+          "tierId": {
+            "type": "string",
+            "title": "Tierid",
+            "default": "T1"
+          },
+          "seasonId": {
+            "type": "string",
+            "title": "Seasonid",
+            "default": "S1"
+          },
+          "promotionPath": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Promotionpath"
+          },
+          "equippedItemIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Equippeditemids"
+          },
+          "skillsUnlocked": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Skillsunlocked"
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunterId",
+          "accountId"
+        ],
+        "title": "Hunter"
+      },
+      "HunterEquipRequest": {
+        "properties": {
+          "equippedItemIds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Equippeditemids",
+            "description": "List of equipped item ids"
+          }
+        },
+        "type": "object",
+        "title": "HunterEquipRequest"
+      },
+      "HunterEquipResponse": {
+        "properties": {
+          "hunter": {
+            "$ref": "#/components/schemas/Hunter"
+          },
+          "itemMultipliers": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Itemmultipliers"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunter"
+        ],
+        "title": "HunterEquipResponse"
+      },
+      "HunterPromoteRequest": {
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "title": "Nodeid",
+            "description": "Promotion node id to apply"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nodeId"
+        ],
+        "title": "HunterPromoteRequest"
+      },
+      "HunterPromoteResponse": {
+        "properties": {
+          "hunter": {
+            "$ref": "#/components/schemas/Hunter"
+          },
+          "appliedStatBonus": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Appliedstatbonus"
+          },
+          "unlockedSkills": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unlockedskills"
+          },
+          "promotionMultiplier": {
+            "type": "number",
+            "title": "Promotionmultiplier",
+            "default": 1.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunter"
+        ],
+        "title": "HunterPromoteResponse"
+      },
+      "HunterTierUpRequest": {
+        "properties": {
+          "tierId": {
+            "type": "string",
+            "title": "Tierid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tierId"
+        ],
+        "title": "HunterTierUpRequest"
+      },
+      "HunterTierUpResponse": {
+        "properties": {
+          "hunter": {
+            "$ref": "#/components/schemas/Hunter"
+          },
+          "changed": {
+            "type": "boolean",
+            "title": "Changed",
+            "default": true
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunter"
+        ],
+        "title": "HunterTierUpResponse"
+      },
+      "IapProductUpsertReq": {
+        "properties": {
+          "productId": {
+            "type": "string",
+            "title": "Productid"
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^(gold|gems|exp)$",
+            "title": "Currency"
+          },
+          "amount": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Amount"
+          }
+        },
+        "type": "object",
+        "required": [
+          "productId",
+          "currency",
+          "amount"
+        ],
+        "title": "IapProductUpsertReq"
+      },
+      "ItemUpsertReq": {
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "title": "Itemid"
+          },
+          "seasonId": {
+            "type": "string",
+            "title": "Seasonid"
+          },
+          "tierId": {
+            "type": "string",
+            "title": "Tierid"
+          },
+          "slot": {
+            "type": "string",
+            "title": "Slot"
+          },
+          "atkMul": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Atkmul"
+          },
+          "hpMul": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Hpmul"
+          },
+          "defMul": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Defmul"
+          },
+          "skillMul": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Skillmul"
+          }
+        },
+        "type": "object",
+        "required": [
+          "itemId",
+          "seasonId",
+          "tierId",
+          "slot",
+          "atkMul",
+          "hpMul",
+          "defMul",
+          "skillMul"
+        ],
+        "title": "ItemUpsertReq"
+      },
+      "LinkAppleReq": {
+        "properties": {
+          "identityToken": {
+            "type": "string",
+            "title": "Identitytoken"
+          }
+        },
+        "type": "object",
+        "required": [
+          "identityToken"
+        ],
+        "title": "LinkAppleReq"
+      },
+      "LinkGoogleReq": {
+        "properties": {
+          "idToken": {
+            "type": "string",
+            "title": "Idtoken"
+          }
+        },
+        "type": "object",
+        "required": [
+          "idToken"
+        ],
+        "title": "LinkGoogleReq"
+      },
+      "Map": {
+        "properties": {
+          "mapId": {
+            "type": "string",
+            "title": "Mapid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          },
+          "recommendedLevel": {
+            "type": "integer",
+            "title": "Recommendedlevel",
+            "default": 1
+          },
+          "monsterPool": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Monsterpool"
+          },
+          "offlineMultiplier": {
+            "type": "number",
+            "title": "Offlinemultiplier",
+            "default": 1.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "mapId"
+        ],
+        "title": "Map"
+      },
+      "MbtiUpsertReq": {
+        "properties": {
+          "mbti": {
+            "type": "string",
+            "title": "Mbti"
+          },
+          "atkMul": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Atkmul"
+          },
+          "hpMul": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Hpmul"
+          },
+          "defMul": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Defmul"
+          },
+          "goldMul": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Goldmul"
+          },
+          "expMul": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Expmul"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mbti",
+          "atkMul",
+          "hpMul",
+          "defMul",
+          "goldMul",
+          "expMul"
+        ],
+        "title": "MbtiUpsertReq"
+      },
+      "Monster": {
+        "properties": {
+          "monsterId": {
+            "type": "string",
+            "title": "Monsterid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          },
+          "level": {
+            "type": "integer",
+            "title": "Level",
+            "default": 1
+          },
+          "hp": {
+            "type": "number",
+            "title": "Hp",
+            "default": 0
+          },
+          "atk": {
+            "type": "number",
+            "title": "Atk",
+            "default": 0
+          },
+          "defense": {
+            "type": "number",
+            "title": "Defense",
+            "default": 0
+          },
+          "goldPerMin": {
+            "type": "integer",
+            "title": "Goldpermin",
+            "default": 0
+          },
+          "expPerMin": {
+            "type": "integer",
+            "title": "Exppermin",
+            "default": 0
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags"
+          }
+        },
+        "type": "object",
+        "required": [
+          "monsterId"
+        ],
+        "title": "Monster"
+      },
+      "OAuthLoginReq": {
+        "properties": {
+          "idToken": {
+            "type": "string",
+            "title": "Idtoken"
+          },
+          "deviceId": {
+            "type": "string",
+            "title": "Deviceid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "idToken",
+          "deviceId"
+        ],
+        "title": "OAuthLoginReq"
+      },
+      "OfflineCollectResponse": {
+        "properties": {
+          "hunterId": {
+            "type": "string",
+            "title": "Hunterid"
+          },
+          "collected": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Collected"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunterId",
+          "collected"
+        ],
+        "title": "OfflineCollectResponse"
+      },
+      "OfflinePreviewRequest": {
+        "properties": {
+          "hunterId": {
+            "type": "string",
+            "title": "Hunterid"
+          },
+          "lastActiveAtEpochSec": {
+            "type": "integer",
+            "title": "Lastactiveatepochsec"
+          },
+          "nowEpochSec": {
+            "type": "integer",
+            "title": "Nowepochsec"
+          },
+          "mapId": {
+            "type": "string",
+            "title": "Mapid"
+          },
+          "villageId": {
+            "type": "string",
+            "title": "Villageid"
+          },
+          "baseGoldPerMin": {
+            "type": "integer",
+            "title": "Basegoldpermin"
+          },
+          "baseExpPerMin": {
+            "type": "integer",
+            "title": "Baseexppermin"
+          },
+          "vipMultiplier": {
+            "type": "number",
+            "title": "Vipmultiplier",
+            "default": 1.0
+          },
+          "eventMultiplier": {
+            "type": "number",
+            "title": "Eventmultiplier",
+            "default": 1.0
+          },
+          "adminMultiplier": {
+            "type": "number",
+            "title": "Adminmultiplier",
+            "default": 1.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunterId",
+          "lastActiveAtEpochSec",
+          "nowEpochSec",
+          "mapId",
+          "villageId",
+          "baseGoldPerMin",
+          "baseExpPerMin"
+        ],
+        "title": "OfflinePreviewRequest"
+      },
+      "OfflinePreviewResponse": {
+        "properties": {
+          "offlineMinutes": {
+            "type": "integer",
+            "title": "Offlineminutes"
+          },
+          "cappedMinutes": {
+            "type": "integer",
+            "title": "Cappedminutes"
+          },
+          "gold": {
+            "type": "integer",
+            "title": "Gold"
+          },
+          "exp": {
+            "type": "integer",
+            "title": "Exp"
+          },
+          "breakdown": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Breakdown"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "offlineMinutes",
+          "cappedMinutes",
+          "gold",
+          "exp"
+        ],
+        "title": "OfflinePreviewResponse"
+      },
+      "PromotionNodeUpsertReq": {
+        "properties": {
+          "nodeId": {
+            "type": "string",
+            "title": "Nodeid"
+          },
+          "parentNodeId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentnodeid"
+          },
+          "jobId": {
+            "type": "string",
+            "title": "Jobid"
+          },
+          "choiceGroup": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Choicegroup"
+          },
+          "promotionMultiplier": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Promotionmultiplier"
+          },
+          "statBonus": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Statbonus"
+          },
+          "skillUnlock": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Skillunlock"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nodeId",
+          "jobId",
+          "promotionMultiplier"
+        ],
+        "title": "PromotionNodeUpsertReq"
+      },
+      "PvPClaimRequest": {
+        "properties": {
+          "hunterId": {
+            "type": "string",
+            "title": "Hunterid"
+          },
+          "seasonId": {
+            "type": "string",
+            "title": "Seasonid"
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Rank"
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunterId",
+          "seasonId",
+          "rank"
+        ],
+        "title": "PvPClaimRequest"
+      },
+      "PvPSeason": {
+        "properties": {
+          "seasonId": {
+            "type": "string",
+            "title": "Seasonid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          },
+          "baseGold": {
+            "type": "integer",
+            "title": "Basegold",
+            "default": 0
+          },
+          "baseExp": {
+            "type": "integer",
+            "title": "Baseexp",
+            "default": 0
+          },
+          "baseGems": {
+            "type": "integer",
+            "title": "Basegems",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "seasonId"
+        ],
+        "title": "PvPSeason"
+      },
+      "RefreshReq": {
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "title": "Refreshtoken"
+          },
+          "deviceId": {
+            "type": "string",
+            "title": "Deviceid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "refreshToken",
+          "deviceId"
+        ],
+        "title": "RefreshReq"
+      },
+      "RewardClaimResponse": {
+        "properties": {
+          "hunterId": {
+            "type": "string",
+            "title": "Hunterid"
+          },
+          "seasonId": {
+            "type": "string",
+            "title": "Seasonid"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "worldboss",
+              "pvp"
+            ],
+            "title": "Source"
+          },
+          "granted": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Granted"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note",
+            "default": ""
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunterId",
+          "seasonId",
+          "source",
+          "granted"
+        ],
+        "title": "RewardClaimResponse"
+      },
+      "RewardTier": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "worldboss",
+              "pvp"
+            ],
+            "title": "Kind"
+          },
+          "rankMin": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Rankmin"
+          },
+          "rankMax": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rankmax"
+          },
+          "multiplier": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Multiplier",
+            "default": 1.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "rankMin"
+        ],
+        "title": "RewardTier"
+      },
+      "RewardTierUpsertRequest": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "worldboss",
+              "pvp"
+            ],
+            "title": "Kind"
+          },
+          "rankMin": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Rankmin"
+          },
+          "rankMax": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rankmax"
+          },
+          "multiplier": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Multiplier",
+            "default": 1.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "rankMin"
+        ],
+        "title": "RewardTierUpsertRequest"
+      },
+      "TierUpsertReq": {
+        "properties": {
+          "seasonId": {
+            "type": "string",
+            "title": "Seasonid"
+          },
+          "tierId": {
+            "type": "string",
+            "title": "Tierid"
+          },
+          "multiplier": {
+            "type": "number",
+            "exclusiveMinimum": 0.0,
+            "title": "Multiplier"
+          }
+        },
+        "type": "object",
+        "required": [
+          "seasonId",
+          "tierId",
+          "multiplier"
+        ],
+        "title": "TierUpsertReq"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "Village": {
+        "properties": {
+          "villageId": {
+            "type": "string",
+            "title": "Villageid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          },
+          "taxRate": {
+            "type": "number",
+            "title": "Taxrate",
+            "default": 0.0
+          },
+          "offlineStorageBonus": {
+            "type": "number",
+            "title": "Offlinestoragebonus",
+            "default": 0.0
+          }
+        },
+        "type": "object",
+        "required": [
+          "villageId"
+        ],
+        "title": "Village"
+      },
+      "WorldBoss": {
+        "properties": {
+          "bossId": {
+            "type": "string",
+            "title": "Bossid"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "default": ""
+          },
+          "maxHp": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Maxhp",
+            "default": 1
+          },
+          "difficulty": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Difficulty",
+            "default": 1
+          },
+          "baseGold": {
+            "type": "integer",
+            "title": "Basegold",
+            "default": 0
+          },
+          "baseExp": {
+            "type": "integer",
+            "title": "Baseexp",
+            "default": 0
+          },
+          "baseGems": {
+            "type": "integer",
+            "title": "Basegems",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "bossId"
+        ],
+        "title": "WorldBoss"
+      },
+      "WorldBossClaimRequest": {
+        "properties": {
+          "hunterId": {
+            "type": "string",
+            "title": "Hunterid"
+          },
+          "bossId": {
+            "type": "string",
+            "title": "Bossid"
+          },
+          "seasonId": {
+            "type": "string",
+            "title": "Seasonid"
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Rank"
+          }
+        },
+        "type": "object",
+        "required": [
+          "hunterId",
+          "bossId",
+          "seasonId",
+          "rank"
+        ],
+        "title": "WorldBossClaimRequest"
+      }
+    }
+  }
+}
