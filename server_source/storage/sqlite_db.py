@@ -1,3 +1,4 @@
+# DEV-DIRECTION-LOCK: Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only.
 import os
 import sqlite3
 import threading
@@ -77,6 +78,115 @@ def get_conn() -> sqlite3.Connection:
         return _conn
 
 
+def _ensure_extra_liveops_schema(conn: sqlite3.Connection) -> None:
+    """Small forward-compatible migrations for newer liveops columns/tables."""
+    def ensure_column(table: str, column: str, ddl: str) -> None:
+        cols = {row[1] for row in conn.execute(f"PRAGMA table_info({table});").fetchall()}
+        if column not in cols:
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN {ddl};")
+
+    tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table';").fetchall()}
+    if "ad_view_session" in tables:
+        ensure_column("ad_view_session", "verifiedAt", "verifiedAt INTEGER")
+        ensure_column("ad_view_session", "completionProof", "completionProof TEXT")
+        ensure_column("ad_view_session", "completionToken", "completionToken TEXT")
+        ensure_column("ad_view_session", "adNetwork", "adNetwork TEXT")
+        ensure_column("ad_view_session", "adUnitId", "adUnitId TEXT")
+
+    conn.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS operator_treasury (
+            accountId TEXT PRIMARY KEY,
+            operatorGold INTEGER NOT NULL DEFAULT 0,
+            operatorExp INTEGER NOT NULL DEFAULT 0,
+            updatedAt INTEGER NOT NULL
+        );
+        '''
+    )
+    conn.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS operator_inventory (
+            accountId TEXT NOT NULL,
+            itemId TEXT NOT NULL,
+            quantity INTEGER NOT NULL DEFAULT 0,
+            updatedAt INTEGER NOT NULL,
+            PRIMARY KEY (accountId, itemId)
+        );
+        '''
+    )
+    conn.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS operator_action_log (
+            logId TEXT PRIMARY KEY,
+            accountId TEXT NOT NULL,
+            hunterId TEXT,
+            actionType TEXT NOT NULL,
+            resultCode TEXT NOT NULL,
+            detail TEXT,
+            payloadJson TEXT,
+            createdAt INTEGER NOT NULL
+        );
+        '''
+    )
+    conn.execute(
+        '''
+        CREATE INDEX IF NOT EXISTS idx_operator_action_log_account_time
+        ON operator_action_log(accountId, createdAt DESC);
+        '''
+    )
+    conn.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS hunter_state_snapshot (
+            snapshotId TEXT PRIMARY KEY,
+            hunterId TEXT NOT NULL,
+            accountId TEXT NOT NULL,
+            stateCode TEXT NOT NULL,
+            nextStateCode TEXT NOT NULL,
+            payloadJson TEXT,
+            createdAt INTEGER NOT NULL
+        );
+        '''
+    )
+    conn.execute(
+        '''
+        CREATE INDEX IF NOT EXISTS idx_hunter_state_snapshot_hunter_time
+        ON hunter_state_snapshot(hunterId, createdAt DESC);
+        '''
+    )
+
+    conn.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS operator_mission_claim (
+            accountId TEXT NOT NULL,
+            missionId TEXT NOT NULL,
+            missionScope TEXT NOT NULL,
+            rewardJson TEXT,
+            createdAt INTEGER NOT NULL,
+            PRIMARY KEY (accountId, missionId, missionScope)
+        );
+        '''
+    )
+
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS telemetry_events (
+            eventId TEXT PRIMARY KEY,
+            accountId TEXT,
+            eventType TEXT NOT NULL,
+            eventName TEXT NOT NULL,
+            payloadJson TEXT,
+            createdAt INTEGER NOT NULL
+        );
+        """
+    )
+    conn.execute(
+        """
+        CREATE INDEX IF NOT EXISTS idx_telemetry_events_account_time
+        ON telemetry_events(accountId, createdAt DESC);
+        """
+    )
+
+
 def _ensure_offline_collect_schema(conn: sqlite3.Connection) -> None:
     """Ensure offline_collect has (hunterId, collectedAtEpoch) idempotency key.
 
@@ -103,6 +213,7 @@ def _init_schema(conn: sqlite3.Connection) -> None:
     conn.execute("BEGIN;")
 
     _ensure_offline_collect_schema(conn)
+    _ensure_extra_liveops_schema(conn)
 
     # -------------------------
     # offline_collect (idempotent offline reward)
@@ -307,6 +418,116 @@ def _init_schema(conn: sqlite3.Connection) -> None:
         """
         CREATE INDEX IF NOT EXISTS idx_currency_ledger_account_time
         ON currency_ledger(account_id, created_at DESC);
+        """
+    )
+
+
+    # -------------------------
+    # tutorial / story / ads claim persistence
+    # -------------------------
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS tutorial_progress (
+            accountId TEXT NOT NULL,
+            questId TEXT NOT NULL,
+            completedAt TEXT NOT NULL DEFAULT (datetime('now')),
+            PRIMARY KEY (accountId, questId)
+        );
+        """
+    )
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS story_progress (
+            accountId TEXT PRIMARY KEY,
+            currentChapterId TEXT NOT NULL,
+            updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+        """
+    )
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS ad_offer_claim (
+            accountId TEXT NOT NULL,
+            offerId TEXT NOT NULL,
+            adViewToken TEXT NOT NULL,
+            claimDate TEXT NOT NULL,
+            rewardType TEXT NOT NULL,
+            rewardAmount INTEGER NOT NULL,
+            createdAt TEXT NOT NULL DEFAULT (datetime('now')),
+            PRIMARY KEY (accountId, adViewToken)
+        );
+        """
+    )
+    conn.execute(
+        """
+        CREATE INDEX IF NOT EXISTS idx_ad_offer_claim_daily
+        ON ad_offer_claim(accountId, offerId, claimDate);
+        """
+    )
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS ad_view_session (
+            accountId TEXT NOT NULL,
+            adViewToken TEXT NOT NULL,
+            offerId TEXT NOT NULL,
+            placement TEXT NOT NULL,
+            hunterId TEXT,
+            issuedAt INTEGER NOT NULL,
+            expiresAt INTEGER NOT NULL,
+            consumedAt INTEGER,
+            verifiedAt INTEGER,
+            completionProof TEXT,
+            completionToken TEXT,
+            adNetwork TEXT,
+            adUnitId TEXT,
+            status TEXT NOT NULL DEFAULT 'issued',
+            PRIMARY KEY (accountId, adViewToken)
+        );
+        """
+    )
+    conn.execute(
+        """
+        CREATE INDEX IF NOT EXISTS idx_ad_view_session_account_offer
+        ON ad_view_session(accountId, offerId, expiresAt DESC);
+        """
+    )
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS mailbox_messages (
+            messageId TEXT PRIMARY KEY,
+            accountId TEXT NOT NULL,
+            messageType TEXT NOT NULL,
+            title TEXT NOT NULL,
+            body TEXT NOT NULL,
+            rewardCurrency TEXT,
+            rewardAmount INTEGER NOT NULL DEFAULT 0,
+            sourceKind TEXT NOT NULL,
+            sourceId TEXT NOT NULL,
+            isClaimed INTEGER NOT NULL DEFAULT 0,
+            createdAt INTEGER NOT NULL,
+            claimedAt INTEGER
+        );
+        """
+    )
+    conn.execute(
+        """
+        CREATE UNIQUE INDEX IF NOT EXISTS uq_mailbox_source
+        ON mailbox_messages(sourceKind, sourceId);
+        """
+    )
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS announcements (
+            announcementId TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            body TEXT NOT NULL,
+            startsAt INTEGER NOT NULL,
+            endsAt INTEGER NOT NULL,
+            priority INTEGER NOT NULL DEFAULT 100,
+            isEnabled INTEGER NOT NULL DEFAULT 1,
+            createdAt INTEGER NOT NULL,
+            updatedAt INTEGER NOT NULL
+        );
         """
     )
 
@@ -1140,3 +1361,450 @@ def list_pvp_seasons_db() -> list[Dict[str, Any]]:
         for r in rows
     ]
 
+
+
+
+# -------------------------
+# tutorial / story / ads claim
+# -------------------------
+
+
+def complete_tutorial_quest(account_id: str, quest_id: str) -> List[Dict[str, Any]]:
+    conn = get_conn()
+    conn.execute(
+        """
+        INSERT OR IGNORE INTO tutorial_progress(accountId, questId, completedAt)
+        VALUES(?, ?, datetime('now'));
+        """,
+        (str(account_id), str(quest_id)),
+    )
+    cur = conn.execute(
+        "SELECT accountId, questId, completedAt FROM tutorial_progress WHERE accountId=? AND questId=?;",
+        (str(account_id), str(quest_id)),
+    )
+    row = cur.fetchone()
+    return {"accountId": row[0], "questId": row[1], "completedAt": row[2]}
+
+
+def list_tutorial_progress(account_id: str) -> List[Dict[str, Any]]:
+    conn = get_conn()
+    cur = conn.execute(
+        "SELECT accountId, questId, completedAt FROM tutorial_progress WHERE accountId=? ORDER BY completedAt ASC, questId ASC;",
+        (str(account_id),),
+    )
+    rows = cur.fetchall()
+    return [{"accountId": r[0], "questId": r[1], "completedAt": r[2]} for r in rows]
+
+
+def upsert_story_progress(account_id: str, chapter_id: str) -> Dict[str, Any]:
+    conn = get_conn()
+    conn.execute(
+        """
+        INSERT INTO story_progress(accountId, currentChapterId, updatedAt)
+        VALUES(?, ?, datetime('now'))
+        ON CONFLICT(accountId) DO UPDATE SET currentChapterId=excluded.currentChapterId, updatedAt=datetime('now');
+        """,
+        (str(account_id), str(chapter_id)),
+    )
+    cur = conn.execute(
+        "SELECT accountId, currentChapterId, updatedAt FROM story_progress WHERE accountId=?;",
+        (str(account_id),),
+    )
+    row = cur.fetchone()
+    return {"accountId": row[0], "currentChapterId": row[1], "updatedAt": row[2]}
+
+
+def get_story_progress(account_id: str) -> Dict[str, Any] | None:
+    conn = get_conn()
+    cur = conn.execute(
+        "SELECT accountId, currentChapterId, updatedAt FROM story_progress WHERE accountId=?;",
+        (str(account_id),),
+    )
+    row = cur.fetchone()
+    if not row:
+        return None
+    return {"accountId": row[0], "currentChapterId": row[1], "updatedAt": row[2]}
+
+
+def count_daily_ad_claims(account_id: str, offer_id: str, claim_date: str) -> int:
+    conn = get_conn()
+    cur = conn.execute(
+        "SELECT COUNT(*) FROM ad_offer_claim WHERE accountId=? AND offerId=? AND claimDate=?;",
+        (str(account_id), str(offer_id), str(claim_date)),
+    )
+    row = cur.fetchone()
+    return int(row[0] if row else 0)
+
+
+def count_lifetime_ad_claims(account_id: str) -> int:
+    conn = get_conn()
+    cur = conn.execute(
+        "SELECT COUNT(*) FROM ad_offer_claim WHERE accountId=?;",
+        (str(account_id),),
+    )
+    row = cur.fetchone()
+    return int(row[0] if row else 0)
+
+
+def get_ad_claim_by_token(account_id: str, ad_view_token: str) -> Dict[str, Any] | None:
+    conn = get_conn()
+    cur = conn.execute(
+        """
+        SELECT accountId, offerId, adViewToken, claimDate, rewardType, rewardAmount, createdAt
+        FROM ad_offer_claim
+        WHERE accountId=? AND adViewToken=?;
+        """,
+        (str(account_id), str(ad_view_token)),
+    )
+    row = cur.fetchone()
+    if not row:
+        return None
+    return {
+        "accountId": row[0],
+        "offerId": row[1],
+        "adViewToken": row[2],
+        "claimDate": row[3],
+        "rewardType": row[4],
+        "rewardAmount": row[5],
+        "createdAt": row[6],
+    }
+
+
+def insert_ad_claim(account_id: str, offer_id: str, ad_view_token: str, claim_date: str, reward_type: str, reward_amount: int) -> bool:
+    conn = get_conn()
+    cur = conn.execute(
+        """
+        INSERT OR IGNORE INTO ad_offer_claim(accountId, offerId, adViewToken, claimDate, rewardType, rewardAmount)
+        VALUES(?, ?, ?, ?, ?, ?);
+        """,
+        (str(account_id), str(offer_id), str(ad_view_token), str(claim_date), str(reward_type), int(reward_amount)),
+    )
+    return int(getattr(cur, "rowcount", 0) or 0) > 0
+
+# -------------------------
+# ad sessions / liveops / account summary helpers
+# -------------------------
+
+def create_ad_view_session(account_id: str, offer_id: str, ad_view_token: str, placement: str, hunter_id: str | None, ttl_sec: int = 900) -> Dict[str, Any]:
+    conn = get_conn()
+    now = _now_epoch()
+    expires_at = now + max(60, int(ttl_sec))
+    conn.execute(
+        """
+        INSERT OR REPLACE INTO ad_view_session(accountId, adViewToken, offerId, placement, hunterId, issuedAt, expiresAt, consumedAt, verifiedAt, completionProof, completionToken, adNetwork, adUnitId, status)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        """,
+        (str(account_id), str(ad_view_token), str(offer_id), str(placement), str(hunter_id) if hunter_id else None, now, expires_at, None, None, None, None, None, None, "issued"),
+    )
+    return get_ad_view_session(account_id, ad_view_token)
+
+
+def get_ad_view_session(account_id: str, ad_view_token: str) -> Dict[str, Any] | None:
+    conn = get_conn()
+    row = conn.execute(
+        """
+        SELECT accountId, adViewToken, offerId, placement, hunterId, issuedAt, expiresAt, consumedAt, verifiedAt, completionProof, completionToken, adNetwork, adUnitId, status
+        FROM ad_view_session WHERE accountId=? AND adViewToken=?
+        """,
+        (str(account_id), str(ad_view_token)),
+    ).fetchone()
+    if not row:
+        return None
+    return {
+        "accountId": row[0],
+        "adViewToken": row[1],
+        "offerId": row[2],
+        "placement": row[3],
+        "hunterId": row[4],
+        "issuedAt": int(row[5]),
+        "expiresAt": int(row[6]),
+        "consumedAt": int(row[7]) if row[7] is not None else None,
+        "verifiedAt": int(row[8]) if row[8] is not None else None,
+        "completionProof": row[9],
+        "completionToken": row[10],
+        "adNetwork": row[11],
+        "adUnitId": row[12],
+        "status": row[13],
+    }
+
+
+def verify_ad_view_session(account_id: str, ad_view_token: str, completion_proof: str, ad_network: str, ad_unit_id: str) -> Dict[str, Any] | None:
+    conn = get_conn()
+    session = get_ad_view_session(account_id, ad_view_token)
+    if not session:
+        return None
+    if session["status"] == "verified":
+        return session
+    if session["status"] != "issued":
+        return None
+    now = _now_epoch()
+    if session["expiresAt"] < now:
+        return None
+    completion_token = f"adc_{str(ad_view_token)[-12:]}"
+    conn.execute(
+        """
+        UPDATE ad_view_session
+        SET verifiedAt=?, completionProof=?, completionToken=?, adNetwork=?, adUnitId=?, status='verified'
+        WHERE accountId=? AND adViewToken=? AND status='issued' AND expiresAt>=?
+        """,
+        (now, str(completion_proof), completion_token, str(ad_network), str(ad_unit_id), str(account_id), str(ad_view_token), now),
+    )
+    return get_ad_view_session(account_id, ad_view_token)
+
+
+def consume_ad_view_session(account_id: str, ad_view_token: str, completion_token: str | None = None) -> bool:
+    conn = get_conn()
+    params = [_now_epoch(), str(account_id), str(ad_view_token), _now_epoch()]
+    completion_sql = ""
+    if completion_token is not None:
+        completion_sql = " AND completionToken=?"
+        params.append(str(completion_token))
+    cur = conn.execute(
+        f"""
+        UPDATE ad_view_session
+        SET consumedAt=?, status='consumed'
+        WHERE accountId=? AND adViewToken=? AND expiresAt>=? AND status='verified'{completion_sql}
+        """,
+        tuple(params),
+    )
+    return int(getattr(cur, "rowcount", 0) or 0) == 1
+
+
+def insert_mailbox_message(message_id: str, account_id: str, title: str, body: str, reward_currency: str | None, reward_amount: int, source_kind: str, source_id: str, message_type: str = "reward") -> bool:
+    conn = get_conn()
+    cur = conn.execute(
+        """
+        INSERT OR IGNORE INTO mailbox_messages(messageId, accountId, messageType, title, body, rewardCurrency, rewardAmount, sourceKind, sourceId, isClaimed, createdAt, claimedAt)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
+        """,
+        (str(message_id), str(account_id), str(message_type), str(title), str(body), str(reward_currency) if reward_currency else None, int(reward_amount), str(source_kind), str(source_id), 0, _now_epoch(), None),
+    )
+    return int(getattr(cur, "rowcount", 0) or 0) == 1
+
+
+def list_mailbox_messages(account_id: str, include_claimed: bool = False) -> List[Dict[str, Any]]:
+    conn = get_conn()
+    query = "SELECT messageId, accountId, messageType, title, body, rewardCurrency, rewardAmount, sourceKind, sourceId, isClaimed, createdAt, claimedAt FROM mailbox_messages WHERE accountId=?"
+    if not include_claimed:
+        query += " AND isClaimed=0"
+    query += " ORDER BY createdAt DESC, messageId DESC"
+    rows = conn.execute(query, (str(account_id),)).fetchall()
+    return [{
+        "messageId": r[0], "accountId": r[1], "messageType": r[2], "title": r[3], "body": r[4], "rewardCurrency": r[5], "rewardAmount": int(r[6]), "sourceKind": r[7], "sourceId": r[8], "isClaimed": bool(r[9]), "createdAt": int(r[10]), "claimedAt": int(r[11]) if r[11] is not None else None,
+    } for r in rows]
+
+
+def claim_mailbox_message(message_id: str) -> Dict[str, Any] | None:
+    conn = get_conn()
+    row = conn.execute("SELECT messageId, accountId, rewardCurrency, rewardAmount, isClaimed FROM mailbox_messages WHERE messageId=?", (str(message_id),)).fetchone()
+    if not row:
+        return None
+    if int(row[4]) == 1:
+        return {"messageId": row[0], "accountId": row[1], "rewardCurrency": row[2], "rewardAmount": int(row[3]), "status": "already_claimed"}
+    conn.execute("UPDATE mailbox_messages SET isClaimed=1, claimedAt=? WHERE messageId=?", (_now_epoch(), str(message_id)))
+    return {"messageId": row[0], "accountId": row[1], "rewardCurrency": row[2], "rewardAmount": int(row[3]), "status": "claimed"}
+
+
+def upsert_announcement(announcement_id: str, title: str, body: str, starts_at: int, ends_at: int, priority: int = 100, is_enabled: bool = True) -> Dict[str, Any]:
+    conn = get_conn()
+    now = _now_epoch()
+    conn.execute(
+        """
+        INSERT INTO announcements(announcementId, title, body, startsAt, endsAt, priority, isEnabled, createdAt, updatedAt)
+        VALUES(?,?,?,?,?,?,?,?,?)
+        ON CONFLICT(announcementId) DO UPDATE SET
+          title=excluded.title, body=excluded.body, startsAt=excluded.startsAt, endsAt=excluded.endsAt,
+          priority=excluded.priority, isEnabled=excluded.isEnabled, updatedAt=excluded.updatedAt
+        """,
+        (str(announcement_id), str(title), str(body), int(starts_at), int(ends_at), int(priority), 1 if is_enabled else 0, now, now),
+    )
+    return get_announcement(announcement_id)
+
+
+def get_announcement(announcement_id: str) -> Dict[str, Any] | None:
+    conn = get_conn()
+    row = conn.execute("SELECT announcementId, title, body, startsAt, endsAt, priority, isEnabled, createdAt, updatedAt FROM announcements WHERE announcementId=?", (str(announcement_id),)).fetchone()
+    if not row:
+        return None
+    return {"announcementId": row[0], "title": row[1], "body": row[2], "startsAt": int(row[3]), "endsAt": int(row[4]), "priority": int(row[5]), "isEnabled": bool(row[6]), "createdAt": int(row[7]), "updatedAt": int(row[8])}
+
+
+def list_active_announcements(now: int | None = None) -> List[Dict[str, Any]]:
+    current = int(now if now is not None else _now_epoch())
+    conn = get_conn()
+    rows = conn.execute(
+        "SELECT announcementId, title, body, startsAt, endsAt, priority, isEnabled, createdAt, updatedAt FROM announcements WHERE isEnabled=1 AND startsAt<=? AND endsAt>=? ORDER BY priority ASC, startsAt DESC",
+        (current, current),
+    ).fetchall()
+    return [{"announcementId": r[0], "title": r[1], "body": r[2], "startsAt": int(r[3]), "endsAt": int(r[4]), "priority": int(r[5]), "isEnabled": bool(r[6]), "createdAt": int(r[7]), "updatedAt": int(r[8])} for r in rows]
+
+
+def summarize_account_economy(account_id: str) -> Dict[str, Any]:
+    conn = get_conn()
+    rows = conn.execute("SELECT currency, COALESCE(SUM(amount),0) FROM currency_ledger WHERE account_id=? GROUP BY currency ORDER BY currency ASC", (str(account_id),)).fetchall()
+    balances = {str(r[0]): int(r[1]) for r in rows}
+    pending_mail = list_mailbox_messages(account_id, include_claimed=False)
+    return {"accountId": str(account_id), "balances": balances, "pendingMailboxCount": len(pending_mail), "pendingMailboxRewards": pending_mail[:20]}
+
+
+
+def insert_telemetry_event(event_id: str, account_id: str | None, event_type: str, event_name: str, payload_json: str) -> bool:
+    conn = get_conn()
+    cur = conn.execute(
+        """
+        INSERT OR IGNORE INTO telemetry_events(eventId, accountId, eventType, eventName, payloadJson, createdAt)
+        VALUES(?,?,?,?,?,?)
+        """,
+        (str(event_id), str(account_id) if account_id else None, str(event_type), str(event_name), str(payload_json), _now_epoch()),
+    )
+    return int(getattr(cur, "rowcount", 0) or 0) == 1
+
+
+def summarize_telemetry(event_type: str | None = None) -> Dict[str, Any]:
+    conn = get_conn()
+    if event_type:
+        rows = conn.execute(
+            "SELECT eventType, eventName, COUNT(*) FROM telemetry_events WHERE eventType=? GROUP BY eventType, eventName ORDER BY COUNT(*) DESC, eventName ASC",
+            (str(event_type),),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT eventType, eventName, COUNT(*) FROM telemetry_events GROUP BY eventType, eventName ORDER BY COUNT(*) DESC, eventName ASC"
+        ).fetchall()
+    return {
+        "total": sum(int(r[2]) for r in rows),
+        "rows": [{"eventType": r[0], "eventName": r[1], "count": int(r[2])} for r in rows],
+    }
+
+
+def upsert_operator_treasury(account_id: str, gold_delta: int = 0, exp_delta: int = 0) -> Dict[str, Any]:
+    conn = get_conn()
+    now = _now_epoch()
+    existing = conn.execute("SELECT operatorGold, operatorExp FROM operator_treasury WHERE accountId=?", (str(account_id),)).fetchone()
+    gold = int(existing[0]) if existing else 0
+    exp = int(existing[1]) if existing else 0
+    gold = max(0, gold + int(gold_delta))
+    exp = max(0, exp + int(exp_delta))
+    conn.execute(
+        """
+        INSERT INTO operator_treasury(accountId, operatorGold, operatorExp, updatedAt)
+        VALUES(?,?,?,?)
+        ON CONFLICT(accountId) DO UPDATE SET
+          operatorGold=excluded.operatorGold,
+          operatorExp=excluded.operatorExp,
+          updatedAt=excluded.updatedAt
+        """,
+        (str(account_id), gold, exp, now),
+    )
+    return {"accountId": str(account_id), "operatorGold": gold, "operatorExp": exp, "updatedAt": now}
+
+
+def get_operator_inventory(account_id: str) -> Dict[str, int]:
+    conn = get_conn()
+    rows = conn.execute("SELECT itemId, quantity FROM operator_inventory WHERE accountId=? ORDER BY itemId ASC", (str(account_id),)).fetchall()
+    return {str(r[0]): int(r[1]) for r in rows if int(r[1]) > 0}
+
+
+def set_operator_inventory(account_id: str, item_id: str, quantity: int) -> Dict[str, Any]:
+    conn = get_conn()
+    now = _now_epoch()
+    quantity = max(0, int(quantity))
+    conn.execute(
+        """
+        INSERT INTO operator_inventory(accountId, itemId, quantity, updatedAt)
+        VALUES(?,?,?,?)
+        ON CONFLICT(accountId, itemId) DO UPDATE SET
+          quantity=excluded.quantity,
+          updatedAt=excluded.updatedAt
+        """,
+        (str(account_id), str(item_id), quantity, now),
+    )
+    return {"accountId": str(account_id), "itemId": str(item_id), "quantity": quantity, "updatedAt": now}
+
+
+def add_operator_inventory(account_id: str, item_id: str, quantity_delta: int) -> Dict[str, Any]:
+    current = get_operator_inventory(account_id).get(str(item_id), 0)
+    return set_operator_inventory(account_id, item_id, current + int(quantity_delta))
+
+
+def insert_operator_action_log(log_id: str, account_id: str, action_type: str, result_code: str, detail: str = "", payload_json: str = "{}", hunter_id: str | None = None) -> bool:
+    conn = get_conn()
+    cur = conn.execute(
+        """
+        INSERT OR IGNORE INTO operator_action_log(logId, accountId, hunterId, actionType, resultCode, detail, payloadJson, createdAt)
+        VALUES(?,?,?,?,?,?,?,?)
+        """,
+        (str(log_id), str(account_id), str(hunter_id) if hunter_id else None, str(action_type), str(result_code), str(detail), str(payload_json), _now_epoch()),
+    )
+    return int(getattr(cur, "rowcount", 0) or 0) == 1
+
+
+def list_operator_action_logs(account_id: str, limit: int = 20) -> List[Dict[str, Any]]:
+    conn = get_conn()
+    rows = conn.execute(
+        "SELECT logId, accountId, hunterId, actionType, resultCode, detail, payloadJson, createdAt FROM operator_action_log WHERE accountId=? ORDER BY createdAt DESC LIMIT ?",
+        (str(account_id), max(1, int(limit))),
+    ).fetchall()
+    return [
+        {
+            "logId": r[0],
+            "accountId": r[1],
+            "hunterId": r[2],
+            "actionType": r[3],
+            "resultCode": r[4],
+            "detail": r[5] or "",
+            "payloadJson": r[6] or "{}",
+            "createdAt": int(r[7]),
+        }
+        for r in rows
+    ]
+
+
+def insert_hunter_state_snapshot(snapshot_id: str, hunter_id: str, account_id: str, state_code: str, next_state_code: str, payload_json: str = "{}") -> bool:
+    conn = get_conn()
+    cur = conn.execute(
+        """
+        INSERT OR IGNORE INTO hunter_state_snapshot(snapshotId, hunterId, accountId, stateCode, nextStateCode, payloadJson, createdAt)
+        VALUES(?,?,?,?,?,?,?)
+        """,
+        (str(snapshot_id), str(hunter_id), str(account_id), str(state_code), str(next_state_code), str(payload_json), _now_epoch()),
+    )
+    return int(getattr(cur, "rowcount", 0) or 0) == 1
+
+
+def list_hunter_state_snapshots(hunter_id: str, limit: int = 12) -> List[Dict[str, Any]]:
+    conn = get_conn()
+    rows = conn.execute(
+        "SELECT snapshotId, hunterId, accountId, stateCode, nextStateCode, payloadJson, createdAt FROM hunter_state_snapshot WHERE hunterId=? ORDER BY createdAt DESC LIMIT ?",
+        (str(hunter_id), max(1, int(limit))),
+    ).fetchall()
+    return [
+        {
+            "snapshotId": r[0],
+            "hunterId": r[1],
+            "accountId": r[2],
+            "stateCode": r[3],
+            "nextStateCode": r[4],
+            "payloadJson": r[5] or "{}",
+            "createdAt": int(r[6]),
+        }
+        for r in rows
+    ]
+
+
+def has_operator_mission_claim(account_id: str, mission_id: str, mission_scope: str) -> bool:
+    conn = get_conn()
+    row = conn.execute(
+        "SELECT 1 FROM operator_mission_claim WHERE accountId=? AND missionId=? AND missionScope=?",
+        (str(account_id), str(mission_id), str(mission_scope)),
+    ).fetchone()
+    return row is not None
+
+
+def insert_operator_mission_claim(account_id: str, mission_id: str, mission_scope: str, reward_json: str = "{}") -> bool:
+    conn = get_conn()
+    cur = conn.execute(
+        "INSERT OR IGNORE INTO operator_mission_claim(accountId, missionId, missionScope, rewardJson, createdAt) VALUES(?,?,?,?,?)",
+        (str(account_id), str(mission_id), str(mission_scope), str(reward_json), _now_epoch()),
+    )
+    return int(getattr(cur, "rowcount", 0) or 0) == 1

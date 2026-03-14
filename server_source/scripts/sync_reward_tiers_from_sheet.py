@@ -1,3 +1,4 @@
+# DEV-DIRECTION-LOCK: Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only.
 #!/usr/bin/env python3
 """Sync reward_tier(kind=worldboss|pvp) from the project Sheet into SQLite.
 

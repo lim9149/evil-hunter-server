@@ -1,3 +1,4 @@
+# DEV-DIRECTION-LOCK: Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only.
 from typing import Any, Dict, List, Optional
 
 from storage.sqlite_db import get_conn

@@ -1,43 +1,52 @@
+# DEV-DIRECTION-LOCK: Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only.
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 import os
 
 from core.auth import service as auth_svc
+from core.auth.apple_identity import verify_apple_identity_token
 from core.audit import write_audit
 from core.security.deps import require_player
 
-# google id token verification
 from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 
 router = APIRouter()
 
+
 class GuestLoginReq(BaseModel):
     deviceId: str
+
 
 class OAuthLoginReq(BaseModel):
     idToken: str
     deviceId: str
 
+
 class AppleOAuthReq(BaseModel):
     identityToken: str
     deviceId: str
+
 
 class RefreshReq(BaseModel):
     refreshToken: str
     deviceId: str
 
+
 class LinkGoogleReq(BaseModel):
     idToken: str
 
+
 class LinkAppleReq(BaseModel):
     identityToken: str
+
 
 @router.post("/guest")
 def guest_login(req: GuestLoginReq):
     data = auth_svc.guest_login(req.deviceId)
     write_audit("auth_guest", actor=data["accountId"], target=None, payload={"deviceId": req.deviceId})
     return data
+
 
 @router.post("/refresh")
 def refresh(req: RefreshReq):
@@ -48,11 +57,13 @@ def refresh(req: RefreshReq):
     write_audit("auth_refresh", actor=data["accountId"], target=None, payload={"deviceId": req.deviceId})
     return data
 
+
 @router.post("/logout")
 def logout(deviceId: str, account_id: str = Depends(require_player)):
     auth_svc.revoke_device_refreshes(account_id, deviceId)
     write_audit("auth_logout", actor=account_id, target=None, payload={"deviceId": deviceId})
     return {"ok": True}
+
 
 @router.post("/oauth/google")
 def oauth_google(req: OAuthLoginReq):
@@ -63,7 +74,7 @@ def oauth_google(req: OAuthLoginReq):
             info = google_id_token.verify_oauth2_token(req.idToken, greq, google_client_id)
         else:
             info = google_id_token.verify_oauth2_token(req.idToken, greq)
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=401, detail="invalid Google id token")
 
     provider_sub = info.get("sub")
@@ -74,13 +85,17 @@ def oauth_google(req: OAuthLoginReq):
     write_audit("auth_oauth_google", actor=data["accountId"], target=None, payload={"email": info.get("email")})
     return data
 
+
 @router.post("/oauth/apple")
 def oauth_apple(req: AppleOAuthReq):
-    # TODO: verify req.identityToken with Apple keys and get provider_sub
-    provider_sub = f"apple_sub_stub_{req.identityToken[-8:]}"
-    data = auth_svc.oauth_login("apple", provider_sub, req.deviceId)
-    write_audit("auth_oauth_apple", actor=data["accountId"], target=None, payload={"stub": True})
+    try:
+        info = verify_apple_identity_token(req.identityToken)
+    except ValueError as exc:
+        raise HTTPException(status_code=401, detail=str(exc))
+    data = auth_svc.oauth_login("apple", info["sub"], req.deviceId)
+    write_audit("auth_oauth_apple", actor=data["accountId"], target=None, payload={"email": info.get("email"), "verifiedMode": info.get("verifiedMode")})
     return data
+
 
 @router.post("/link/google")
 def link_google(req: LinkGoogleReq, account_id: str = Depends(require_player)):
@@ -91,7 +106,7 @@ def link_google(req: LinkGoogleReq, account_id: str = Depends(require_player)):
             info = google_id_token.verify_oauth2_token(req.idToken, greq, google_client_id)
         else:
             info = google_id_token.verify_oauth2_token(req.idToken, greq)
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=401, detail="invalid Google id token")
 
     provider_sub = info.get("sub")
@@ -105,12 +120,15 @@ def link_google(req: LinkGoogleReq, account_id: str = Depends(require_player)):
     write_audit("auth_link_google", actor=account_id, target=None, payload={"email": info.get("email")})
     return {"ok": True}
 
+
 @router.post("/link/apple")
 def link_apple(req: LinkAppleReq, account_id: str = Depends(require_player)):
-    provider_sub = f"apple_sub_stub_{req.identityToken[-8:]}"  # TODO real verify
     try:
-        auth_svc.link_identity(account_id, "apple", provider_sub)
+        info = verify_apple_identity_token(req.identityToken)
+        auth_svc.link_identity(account_id, "apple", info["sub"])
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=409, detail=str(e))
-    write_audit("auth_link_apple", actor=account_id, target=None, payload={"stub": True})
+    write_audit("auth_link_apple", actor=account_id, target=None, payload={"verifiedMode": info.get("verifiedMode")})
     return {"ok": True}

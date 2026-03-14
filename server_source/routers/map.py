@@ -1,3 +1,4 @@
+# DEV-DIRECTION-LOCK: Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only.
 from fastapi import APIRouter, HTTPException
 from core.schemas import Map
 from storage.repo_registry import map_repo as repo

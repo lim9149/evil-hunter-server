@@ -1,3 +1,5 @@
+> DEV-DIRECTION-LOCK: Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only. See `DEV_DIRECTION_UI_LOCK_2026_03.md`.
+
 # 구글 시트 동기화용 문서 (EvilHunterTycoon Server)
 
 **문서 기준일:** 2026-03-07  

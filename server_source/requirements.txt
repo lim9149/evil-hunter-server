@@ -1,3 +1,5 @@
+[DEV-DIRECTION-LOCK] Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only.
+
 annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.12.1

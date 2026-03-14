@@ -1,3 +1,4 @@
+# DEV-DIRECTION-LOCK: Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only.
 #!/usr/bin/env python3
 """Update the project Google Sheet with progress, API spec, and docs.
 

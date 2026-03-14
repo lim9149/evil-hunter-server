@@ -1,3 +1,4 @@
+# DEV-DIRECTION-LOCK: Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only.
 """Test/dev compatibility shims for optional Google auth dependencies.
 
 If google-auth is not installed, provide minimal modules used by the app/tests:

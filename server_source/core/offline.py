@@ -1,3 +1,4 @@
+# DEV-DIRECTION-LOCK: Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only.
 from dataclasses import dataclass
 from typing import Dict, Any
 import math
@@ -22,6 +23,9 @@ def offline_reward_by_powerscore(
     vip_multiplier: float = 1.0,
     event_multiplier: float = 1.0,
     admin_multiplier: float = 1.0,
+    operation_multiplier: float = 1.0,
+    morale: float = 50.0,
+    fatigue: float = 0.0,
     config: OfflineConfig = OfflineConfig(),
 ) -> Dict[str, Any]:
     if now_epoch <= last_active_epoch:
@@ -41,7 +45,9 @@ def offline_reward_by_powerscore(
     village_gold_mul = 1.0 + max(village_gold_buff, 0.0)
     village_exp_mul  = 1.0 + max(village_exp_buff, 0.0)
 
-    gross_mul = map_multiplier * vip_multiplier * event_multiplier * admin_multiplier
+    morale_mul = max(0.88, 1.0 + (morale - 50.0) / 400.0)
+    fatigue_mul = max(0.72, 1.0 - fatigue / 250.0)
+    gross_mul = map_multiplier * vip_multiplier * event_multiplier * admin_multiplier * operation_multiplier * morale_mul * fatigue_mul
 
     gross_gold = base_gold_per_sec * capped_sec * gross_mul * village_gold_mul
     gross_exp  = base_exp_per_sec  * capped_sec * gross_mul * village_exp_mul
@@ -68,6 +74,9 @@ def offline_reward_by_powerscore(
             "villageExpBuff": village_exp_buff,
             "villageTaxRate": tax,
             "grossMultiplier": gross_mul,
+            "operationMultiplier": operation_multiplier,
+            "morale": morale,
+            "fatigue": fatigue,
         }
     }
 
@@ -84,6 +93,9 @@ def offline_reward(
     vip_multiplier: float = 1.0,
     event_multiplier: float = 1.0,
     admin_multiplier: float = 1.0,
+    operation_multiplier: float = 1.0,
+    morale: float = 50.0,
+    fatigue: float = 0.0,
     config: OfflineConfig = OfflineConfig(),
 ) -> Dict[str, Any]:
     """MVP offline reward calculator (rate-based).
@@ -116,7 +128,9 @@ def offline_reward(
     offline_minutes = offline_seconds // 60
     capped_minutes = capped_sec // 60
 
-    gross_mul = map_multiplier * vip_multiplier * event_multiplier * admin_multiplier
+    morale_mul = max(0.88, 1.0 + (morale - 50.0) / 400.0)
+    fatigue_mul = max(0.72, 1.0 - fatigue / 250.0)
+    gross_mul = map_multiplier * vip_multiplier * event_multiplier * admin_multiplier * operation_multiplier * morale_mul * fatigue_mul
 
     gross_gold = float(base_gold_per_min) * capped_minutes * gross_mul
     gross_exp = float(base_exp_per_min) * capped_minutes * gross_mul
@@ -141,5 +155,8 @@ def offline_reward(
             "grossMultiplier": gross_mul,
             "baseGoldPerMin": float(base_gold_per_min),
             "baseExpPerMin": float(base_exp_per_min),
+            "operationMultiplier": operation_multiplier,
+            "morale": morale,
+            "fatigue": fatigue,
         },
     }

@@ -1,0 +1,62 @@
+{
+  "modified_count": 151,
+  "sample_modified": [
+    "AI_GAME_PROJECT_RULES.md",
+    "AI_TASK_ROADMAP.md",
+    "DEV_DIRECTION_UI_LOCK_2026_03.md",
+    "PROJECT_STATE.md",
+    "README_FIRST.txt",
+    "TODAY_FINAL_UPDATE_2026-03-09.md",
+    "ai_context/GAME_CONCEPT.md",
+    "apply_next_phase.py",
+    "docs_ko/01_∞òä∞ú╝∞ë¼∞Ü┤_φàî∞èñφè╕δ░⌐δ▓ò.md",
+    "docs_ko/01_∞▓ÿ∞¥îδ╢Çφä░_δü¥Ω╣î∞ºÇ_∞ïñφûë∞ê£∞ä£.md",
+    "docs_ko/02_AI_∞£á∞ºÇδ│┤∞êÿ_∞Ü┤∞ÿüΩ░Ç∞¥┤δô£.md",
+    "docs_ko/02_Ω░£δ░£∞ù░∞åì∞ä▒_Ω░Ç∞¥┤δô£.md",
+    "docs_ko/03_Unity_δïñ∞¥îδï¿Ω│ä_∞┤êδô▒φòÖ∞â¥δ▓ä∞áä.md",
+    "docs_ko/03_∞ï£φè╕∞é¼∞Ü⌐δ▓ò.md",
+    "docs_ko/04_∞¢Éφü┤δª¡_φàî∞èñφè╕_∞äñδ¬à.md",
+    "docs_ko/05_AI∞ùÉΩ▓î_δ╢Ö∞ù¼δäúδèö_φöäδí¼φöäφè╕.md",
+    "docs_ko/06_∞äáφâ¥φÿòΩ┤æΩ│á_∞êÿ∞¥╡φÖö_∞Ü┤∞ÿüΩ░Ç∞¥┤δô£.md",
+    "docs_ko/07_∞èñφåáδª¼_φè£φåáδª¼∞û╝_∞äñΩ│ä.md",
+    "docs_ko/08_φò£Ω╡¡δ▓ò_φÖòδÑáφæ£Ω╕░_∞▓┤φü¼.md",
+    "server_source/.env.example"
+  ],
+  "2026-03-12_operator_revision": {
+    "player_role": "문파/마을 운영자",
+    "hunter_control": "사냥터 지정 후 전투/스킬/루팅/귀환 자동",
+    "operator_core": [
+      "제작",
+      "판매",
+      "교육",
+      "전직",
+      "환골탈태",
+      "수수료 정책"
+    ],
+    "hunter_state_machine": [
+      "NeedCheck",
+      "IntentSelect",
+      "MoveToTarget",
+      "PerformAction",
+      "Settlement",
+      "ResumeAutonomy"
+    ],
+    "unlock_pacing": "초반 단순, 중반부터 단계 해금"
+  },
+  "2026-03-12_backend_additions": {
+    "modules": [
+      "core/hunter_state_machine.py",
+      "core/operator_progression.py"
+    ],
+    "routes": [
+      "/hunters/{hunter_id}/assign-hunt-zone",
+      "/hunters/{hunter_id}/state-machine",
+      "/ads/vip-status"
+    ],
+    "focus": [
+      "more mid-stage progression",
+      "server-side stability",
+      "lifetime progression counting"
+    ]
+  }
+}

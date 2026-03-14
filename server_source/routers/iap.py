@@ -1,3 +1,4 @@
+# DEV-DIRECTION-LOCK: Portrait TownWorld UI / overlay panels / bottom fixed menu / visible hunt-return loop / original implementation only.
 import json
 from fastapi import APIRouter, HTTPException, Header, Depends
 from pydantic import BaseModel, Field
